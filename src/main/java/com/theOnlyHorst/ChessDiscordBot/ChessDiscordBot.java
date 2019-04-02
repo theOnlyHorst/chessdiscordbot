@@ -6,10 +6,16 @@ import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.Member;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
+import org.graalvm.compiler.lir.LIRInstruction;
 
 import javax.security.auth.login.LoginException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class ChessDiscordBot extends ListenerAdapter {
@@ -17,6 +23,8 @@ public class ChessDiscordBot extends ListenerAdapter {
     public static JDA jda;
     public static Guild botHome;
 
+
+    public static List<Command> commList;
 
 
     public static String apiKey;
@@ -30,9 +38,48 @@ public class ChessDiscordBot extends ListenerAdapter {
         botSecrets = gson.fromJson(new InputStreamReader(ChessDiscordBot.class.getClassLoader().getResourceAsStream("secrets.json")),new TypeToken<List<String>>(){}.getType());
 
         apiKey = botSecrets.get(0);
+        Strings.loadStrings(gson);
 
         jda = new JDABuilder(AccountType.BOT).setToken(apiKey).addEventListener(new ChessDiscordBot()).build();
 
+        commList = gson.fromJson(new InputStreamReader(ChessDiscordBot.class.getClassLoader().getResourceAsStream("commands.json")),new TypeToken<List<Command>>(){}.getType());
+
     }
 
+    @Override
+    public void onMessageReceived(MessageReceivedEvent event) {
+        super.onMessageReceived(event);
+        String msg = event.getMessage().getContentRaw();
+        Member mSent = event.getMember();
+        User uSent = event.getAuthor();
+        Guild server = event.getGuild();
+        if(msg.startsWith(DEFAULT_PREFIX))
+        {
+            if(msg.startsWith(DEFAULT_PREFIX+"help"))
+            {
+                String commandsText ="";
+                for (Command c : commList)
+                {
+                    commandsText += DEFAULT_PREFIX+c.getCommandName()+"\t\t" + c.getDescription()+"\n";
+                }
+                String commandsTextFinal = commandsText;
+                uSent.openPrivateChannel().queue((privateChannel -> privateChannel.sendMessage(Strings.getStrings().getHelpText()+"\n"+commandsTextFinal).queue()));
+            }
+
+            if(msg.startsWith(DEFAULT_PREFIX+"match"))
+            {
+                ArrayList<String> args = new ArrayList<String>(Arrays.asList(msg.split(" ")));
+                if(args.size()>=3) {
+                    List <Member> foundM = server.getMembersByName(args.get(1),false);
+                    String ruleset = args.get(2);
+                    if(foundM.size()==1)
+                    {
+                        User matchedU = foundM.get(0).getUser();
+
+                        matchedU.openPrivateChannel().queue(chan->chan.sendMessage(String.format(Strings.getStrings().getChallengeText(),uSent.getName(),ruleset)).queue());
+                    }
+                }
+            }
+        }
+    }
 }

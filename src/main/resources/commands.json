@@ -1,0 +1,12 @@
+[
+  {
+    "commandName": "help",
+    "description": "displays the help text",
+    "usage": "!help <command>"
+  },
+  {
+    "commandName": "match",
+    "description": "matches you against a player",
+    "usage": "!match <opponent> <rules>"
+  }
+]
