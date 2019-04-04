@@ -1,23 +1,61 @@
 package com.theOnlyHorst.ChessDiscordBot.Model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import javax.persistence.*;
+import java.util.List;
 
 @Getter
-@AllArgsConstructor
-@NoArgsConstructor
-public class Match {
+@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@EqualsAndHashCode(callSuper = true)
+@Builder
+public class Match extends AbstractPersistable {
 
-    private Long id;
+    @ManyToOne(cascade = CascadeType.PERSIST,optional = false)
+    @NonNull
     private Player white;
+    @ManyToOne
+    @NonNull
     private Player black;
+    @Enumerated(EnumType.STRING)
+    @NonNull
     private MatchStatus status;
+    @Enumerated(EnumType.STRING)
     private MatchResult result;
+    @Enumerated(EnumType.STRING)
     private EndReason ResultReason;
-    private Integer turn;
+    private Integer currentMove;
+    @OneToMany
+    private List<Move> moves;
 
 
+
+
+
+
+    public void makeMove(String move)
+    {
+        Move currentMov=null;
+        for (Move m: moves)
+        {
+            if(m.getMoveNum()==currentMove)
+            {
+                currentMov = m;
+                break;
+            }
+        }
+        if(currentMov==null)
+        {
+            throw new RuntimeException("the Match state is corrupted");
+        }
+        switch (currentMov.getToMove())
+        {
+            case WHITE:
+                
+        }
+    }
 
     public enum MatchStatus
     {
@@ -53,5 +91,8 @@ public class Match {
         {
             return shortForm;
         }
+
+
+
     }
 }

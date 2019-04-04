@@ -1,19 +1,23 @@
 package com.theOnlyHorst.ChessDiscordBot.Model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
+import javax.persistence.Entity;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.time.LocalDate;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Getter
-public class Player {
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
+@EqualsAndHashCode(callSuper = true)
+@Builder
+public class Player extends AbstractPersistable {
 
-    private Long id;
     private String name;
     private Integer elo;
+    @Temporal(TemporalType.DATE)
     private LocalDate lastUpdated;
 
 }
