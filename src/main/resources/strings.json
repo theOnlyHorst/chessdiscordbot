@@ -1,4 +1,4 @@
 {
   "helpText": "Hey there I'm a bot that let's you play chess!\nHere is a List of my commands:\n",
-  "challengeText": "You have been challenged by %1$s with the rules %2$s type 'accept' to accept type 'deny' to deny"
+  "challengeText": "You have been challenged by %1$s type 'accept' to accept type 'deny' to deny"
 }

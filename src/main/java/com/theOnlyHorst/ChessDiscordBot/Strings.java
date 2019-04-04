@@ -6,28 +6,21 @@ import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 
 import java.io.InputStreamReader;
+import java.util.HashMap;
 
-@Getter
 public class Strings {
 
-    @SerializedName("helpText")
-    private String helpText;
+    public static HashMap<String,String> strings;
 
-    @SerializedName("challengeText")
-    private String challengeText;
+    private Strings()
+    {}
 
-
-    public Strings()
-    {
-    }
-
-    private static Strings strings;
     public static void loadStrings(Gson gson)
     {
-        strings = gson.fromJson(new InputStreamReader(ChessDiscordBot.class.getClassLoader().getResourceAsStream("strings.json")),new TypeToken<Strings>(){}.getType());
+        strings = gson.fromJson(new InputStreamReader(ChessDiscordBot.class.getClassLoader().getResourceAsStream("strings.json")),new TypeToken<HashMap<String,String>>(){}.getType());
     }
 
-    public static Strings getStrings()
+    public static HashMap<String,String> getStrings()
     {
         return strings;
     }

@@ -63,20 +63,20 @@ public class ChessDiscordBot extends ListenerAdapter {
                     commandsText += DEFAULT_PREFIX+c.getCommandName()+"\t\t" + c.getDescription()+"\n";
                 }
                 String commandsTextFinal = commandsText;
-                uSent.openPrivateChannel().queue((privateChannel -> privateChannel.sendMessage(Strings.getStrings().getHelpText()+"\n"+commandsTextFinal).queue()));
+                uSent.openPrivateChannel().queue((privateChannel -> privateChannel.sendMessage(Strings.getStrings().get("helpText")+"\n"+commandsTextFinal).queue()));
             }
 
             if(msg.startsWith(DEFAULT_PREFIX+"match"))
             {
                 ArrayList<String> args = new ArrayList<String>(Arrays.asList(msg.split(" ")));
-                if(args.size()>=3) {
+                if(args.size()>=2) {
                     List <Member> foundM = server.getMembersByName(args.get(1),false);
-                    String ruleset = args.get(2);
+
                     if(foundM.size()==1)
                     {
                         User matchedU = foundM.get(0).getUser();
 
-                        matchedU.openPrivateChannel().queue(chan->chan.sendMessage(String.format(Strings.getStrings().getChallengeText(),uSent.getName(),ruleset)).queue());
+                        matchedU.openPrivateChannel().queue(chan->chan.sendMessage(String.format(Strings.getStrings().get("challengeText"),uSent.getName())).queue());
                     }
                 }
             }
