@@ -1,4 +1,4 @@
-package com.theOnlyHorst.ChessDiscordBot;
+package com.theOnlyHorst.ChessDiscordBot.Model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

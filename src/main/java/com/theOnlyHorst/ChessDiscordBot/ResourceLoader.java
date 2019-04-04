@@ -8,11 +8,11 @@ import lombok.Getter;
 import java.io.InputStreamReader;
 import java.util.HashMap;
 
-public class Strings {
+public class ResourceLoader {
 
     public static HashMap<String,String> strings;
 
-    private Strings()
+    private ResourceLoader()
     {}
 
     public static void loadStrings(Gson gson)
