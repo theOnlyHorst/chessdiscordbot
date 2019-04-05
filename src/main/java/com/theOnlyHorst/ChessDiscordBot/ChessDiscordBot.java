@@ -6,9 +6,7 @@ import com.theOnlyHorst.ChessDiscordBot.Model.Command;
 import net.dv8tion.jda.core.AccountType;
 import net.dv8tion.jda.core.JDA;
 import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.Member;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.entities.*;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
@@ -53,6 +51,7 @@ public class ChessDiscordBot extends ListenerAdapter {
         Member mSent = event.getMember();
         User uSent = event.getAuthor();
         Guild server = event.getGuild();
+        TextChannel cSent = event.getTextChannel();
         if(msg.startsWith(DEFAULT_PREFIX))
         {
             if(msg.startsWith(DEFAULT_PREFIX+"help"))
@@ -77,6 +76,7 @@ public class ChessDiscordBot extends ListenerAdapter {
                         User matchedU = foundM.get(0).getUser();
 
                         matchedU.openPrivateChannel().queue(chan->chan.sendMessage(String.format(ResourceLoader.getStrings().get("challengeText"),uSent.getName())).queue());
+                        cSent.sendMessage("An Invitation has been sent").queue();
                     }
                 }
             }

@@ -6,10 +6,10 @@ import javax.persistence.*;
 import java.util.List;
 
 @Getter
-@RequiredArgsConstructor(access = AccessLevel.PUBLIC)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @EqualsAndHashCode(callSuper = true)
+@AllArgsConstructor(access = AccessLevel.PUBLIC)
 @Builder
 public class Match extends AbstractPersistable {
 
@@ -29,10 +29,10 @@ public class Match extends AbstractPersistable {
     private Integer currentMove;
     @OneToMany
     private List<Move> moves;
-
-
-
-
+    private Integer wMoveTime;
+    private Integer bMoveTime;
+    private Integer wMatchTime;
+    private Integer bMatchTime;
 
 
     public void makeMove(String move)
@@ -53,13 +53,21 @@ public class Match extends AbstractPersistable {
         switch (currentMov.getToMove())
         {
             case WHITE:
-                
+                currentMov.setWhiteMove(move);
+                currentMov.setToMove(Move.PlayerToMove.BLACK);
+                break;
+            case BLACK:
+                currentMov.setBlackMove(move);
+                currentMov.setToMove(Move.PlayerToMove.NONE);
+                this.currentMove++;
+                moves.add(Move.builder().toMove(Move.PlayerToMove.WHITE).match(this).moveNum(currentMove).build());
+                break;
         }
     }
 
     public enum MatchStatus
     {
-        CHALLENGED,
+        PENDING,
         PLAYING,
         FINISHED,
         DENIED,
@@ -73,7 +81,8 @@ public class Match extends AbstractPersistable {
         STALEMATE,
         DRAWAGREED,
         NOMATERIAL,
-        REPETITION
+        REPETITION,
+        FIFTYMOVE
     }
     public enum MatchResult
     {
@@ -82,14 +91,10 @@ public class Match extends AbstractPersistable {
         BLACKWINS("0-1"),
         DRAW("1/2-1/2");
 
+        @Getter
         private String shortForm;
-        MatchResult(String shortForm)
-        {
+        MatchResult(String shortForm) {
             this.shortForm = shortForm;
-        }
-        public String getShortForm()
-        {
-            return shortForm;
         }
 
 
