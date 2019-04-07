@@ -3,9 +3,7 @@ package com.theOnlyHorst.ChessDiscordBot.ChessPlayer;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -166,13 +164,13 @@ public class Board {
             int rownum = 7;
             for(String row:position.split("/"))
             {
-                int columnNum = 1;
+                int columnNum = 0;
                   for(char c:row.toCharArray())
                   {
                       if(Character.isDigit(c)) {
                           int x = Integer.parseInt(String.valueOf(c));
                           for (int i = 0; i < x; i++) {
-                              b.getBoardMap().put(rownum * columnNum, 0);
+                              b.getBoardMap().put(rownum *8 + columnNum, 0);
                               columnNum++;
                           }
                       }
@@ -219,6 +217,109 @@ public class Board {
             throw new RuntimeException("Supplied String is not a FEN");
         }
 
+
+
+    }
+
+    public String toFEN()
+    {
+        List<String> rows = new ArrayList<>();
+        for(int i=7;i>=0;i--)
+        {
+            char[] rowPieces = new char[8];
+            for(int x = 0;x<8;x++)
+            {
+                int pieceNum = boardMap.get(i*8+x);
+                switch (pieceNum)
+                {
+                    case 0:
+                        rowPieces[x] = 'e';
+                        break;
+                    case 1:
+                        rowPieces[x] = 'P';
+                        break;
+                    case 2:
+                        rowPieces[x] = 'R';
+                        break;
+                    case 3:
+                        rowPieces[x] = 'N';
+                        break;
+                    case 4:
+                        rowPieces[x] = 'B';
+                        break;
+                    case 5:
+                        rowPieces[x] = 'Q';
+                        break;
+                    case 6:
+                        rowPieces[x] = 'K';
+                        break;
+                    case 7:
+                        rowPieces[x] = 'p';
+                        break;
+                    case 8:
+                        rowPieces[x] = 'r';
+                        break;
+                    case 9:
+                        rowPieces[x] = 'n';
+                        break;
+                    case 10:
+                        rowPieces[x] = 'b';
+                        break;
+                    case 11:
+                        rowPieces[x] = 'q';
+                        break;
+                    case 12:
+                        rowPieces[x] = 'k';
+                        break;
+                }
+            }
+            String row = String.valueOf(rowPieces);
+            String cleanedRow = "";
+            int countEmpt =0;
+            for(int x =0;x<row.length();x++)
+            {
+                if(row.charAt(x)=='e')
+                {
+                    countEmpt++;
+                }
+                else if(countEmpt!=0)
+                {
+                    cleanedRow = row.replaceFirst("e+",String.valueOf(countEmpt));
+                }
+            }
+            rows.add(cleanedRow);
+        }
+
+        String rowString = String.join("/",rows);
+
+        String toMove = blackMove?"b":"w";
+
+        String castles = (castleKingW?"K":"") + (castleQueenW?"Q":"") + (castleKingB?"k":"") + (castleQueenB?"q":"");
+
+        String enPassant;
+        if (enPassantField==-1)
+        {
+            enPassant = "-";
+        }
+        else
+        {
+            int enPassantCol = enPassantField%8;
+            char enPassantColChar = (char)(enPassantCol+97);
+            enPassant = String.valueOf(enPassantColChar)+ enPassantField/8;
+        }
+
+        String halfMov = String.valueOf(halfmoves);
+        String fulMov = String.valueOf(movecount);
+
+
+        return String.join(" ",rowString,toMove,castles,enPassant,halfMov,fulMov);
+    }
+
+    public Board makeMove(String move)
+    {
+
+
+        return null;
     }
 
 }
